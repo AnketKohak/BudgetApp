@@ -18,7 +18,7 @@ struct AddBudgetScreen: View {
     }
     private func saveBudget(){
         let budget = Budget(context: context)
-        budget.titile = title
+        budget.title = title
         budget.limit = limit ?? 0.0
         budget.dateCreated = Date()
         do{

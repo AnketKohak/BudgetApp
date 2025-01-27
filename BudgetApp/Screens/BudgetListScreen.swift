@@ -14,7 +14,7 @@ struct BudgetListScreen: View {
     var body: some View {
         VStack{
             List(budgets){ budget in
-                Text(budget.titile ?? "")
+                Text(budget.title ?? "")
             }
         }.navigationTitle("Budget App")
             .toolbar{
