@@ -18,11 +18,31 @@ class CoreDataProvider {
     static var preview: CoreDataProvider{
         let provider = CoreDataProvider(inMemory: true)
         let context = provider.context
-        let entertainment = Budget(context: context)
         
+        let entertainment = Budget(context: context)
         entertainment.title = "Entertainment"
         entertainment.limit = 500
         entertainment.dateCreated = Date()
+        
+        let groceries = Budget(context: context)
+        groceries.title = "Groceries"
+        groceries.limit = 300
+        groceries.dateCreated = Date()
+
+        let transportation = Budget(context: context)
+        transportation.title = "Transportation"
+        transportation.limit = 200
+        transportation.dateCreated = Date()
+
+        let healthcare = Budget(context: context)
+        healthcare.title = "Healthcare"
+        healthcare.limit = 800
+        healthcare.dateCreated = Date()
+
+        let education = Budget(context: context)
+        education.title = "Education"
+        education.limit = 1000
+        education.dateCreated = Date()
         
         do{
             try context.save()
