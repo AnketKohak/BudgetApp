@@ -14,7 +14,7 @@ struct BudgetCellView: View {
         HStack{
             Text(budget.title ?? "")
             Spacer()
-            Text(budget.limit , format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+            Text(budget.limit , format: .currency(code: Locale.currencyCode))
         }
     }
 }

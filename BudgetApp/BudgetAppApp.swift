@@ -17,8 +17,8 @@ struct BudgetAppApp: App {
         WindowGroup {
             NavigationStack{
                 BudgetListScreen()
-                    .environment(\.managedObjectContext, provider.context)
-            }
+                  
+            }  .environment(\.managedObjectContext, provider.context)
         }
     }
 }

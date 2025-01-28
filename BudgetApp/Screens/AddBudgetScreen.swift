@@ -42,13 +42,14 @@ struct AddBudgetScreen: View {
             Button{
                 if !Budget.exists(context: context, title: title){
                     saveBudget()
+                    
                 }else{
                     errorMessage = "Budget title already exists."
                 }
             }label:{
                 Text("Save")
                     .frame(maxWidth: .infinity)
-            }
+            } 
             .buttonStyle(.borderedProminent)
             .disabled(!isFormValid)
             .presentationDetents([.medium])

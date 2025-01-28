@@ -31,14 +31,13 @@ struct BudgetListScreen: View {
             }.sheet(isPresented: $isPresnted, content: {
                 AddBudgetScreen()
             })
-        
+         
     }
 }
 
 #Preview {
     NavigationStack{
         BudgetListScreen()
-            .environment(\.managedObjectContext, CoreDataProvider.preview.context)
-    }
+    }.environment(\.managedObjectContext, CoreDataProvider.preview.context)
 }
 

@@ -30,6 +30,11 @@ class CoreDataProvider {
         milk.amount = 10
         milk.dateCreated = Date()
         groceries.addToExpenses(milk)
+        let cookie = Expense(context: context)
+        cookie.title = "Cookie"
+        cookie.amount = 25
+        cookie.dateCreated = Date()
+        groceries.addToExpenses(cookie)
 
         
         
