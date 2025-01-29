@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TagView: View {
+struct TagsView: View {
     @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
     @Binding var selectedTags: Set<Tag>
     var body: some View {
@@ -36,7 +36,7 @@ struct TagView: View {
 struct TagsViewContainerview:View {
     @State private var selectedTags: Set<Tag> = []
     var body: some View {
-        TagView(selectedTags: $selectedTags).environment(\.managedObjectContext, CoreDataProvider.preview.context)
+        TagsView(selectedTags: $selectedTags).environment(\.managedObjectContext, CoreDataProvider.preview.context)
     }
 }
 

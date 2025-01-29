@@ -12,8 +12,10 @@ struct BudgetDetailScreen: View {
     let budget: Budget
     @FetchRequest(sortDescriptors: []) private var expenses: FetchedResults<Expense>
     @Environment(\.managedObjectContext) private var context
+
     @State private var title: String = ""
     @State private var amount: Double?
+    @State private var selectedTags: Set<Tag> = []
     // MARK: Init
     init(budget: Budget){
         self.budget = budget
@@ -27,6 +29,7 @@ struct BudgetDetailScreen: View {
         expense.title = title
         expense.amount = amount ?? 0
         expense.dateCreated = Date()
+        expense.tags = NSSet(array: Array(selectedTags))
         budget.addToExpenses(expense)
         do{
             try context.save()
@@ -57,7 +60,8 @@ struct BudgetDetailScreen: View {
     }
     
     private var isFormValid :Bool{
-        !title.isEmptyOrWhitespace && amount != nil && Double(amount!)>0
+        !title.isEmptyOrWhitespace && amount != nil && Double(amount!)>0 && !selectedTags.isEmpty
+        
     }
     // MARK: - Body
     var body: some View {
@@ -72,6 +76,7 @@ struct BudgetDetailScreen: View {
                 TextField("Title",text: $title)
                 TextField("Amount", value:$amount ,format:  .number)
                     .keyboardType(.numberPad)
+                TagsView(selectedTags: $selectedTags)
                 // MARK: -Button
                 Button(action: {
                     addExpense()
