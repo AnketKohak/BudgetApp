@@ -9,29 +9,61 @@ import SwiftUI
 
 struct BudgetListScreen: View {
     @FetchRequest(sortDescriptors: []) private var budgets:FetchedResults<Budget>
+    @State private var isPresented:Bool = false
+    @State private var isFilterPresented: Bool = false
     
-    @State private var isPresnted: Bool = false
+    private var total: Double{
+        budgets.reduce(0){ limit, budget in
+            budget.limit + limit
+        }
+    }
+    
     var body: some View {
         VStack{
-            List(budgets){ budget in
-                NavigationLink{
-                    BudgetDetailScreen(budget: budget)
-                }label:{
-                    BudgetCellView(budget: budget)
-                }
-                
-            }
-        }.navigationTitle("Budget App")
-            .toolbar{
-                ToolbarItem(placement: .topBarTrailing){
-                    Button("Add Budget"){
-                        isPresnted = true
+            if budgets.isEmpty{
+                ContentUnavailableView("No Budget Available." , systemImage: "list.clipboard")
+            }else{
+                List{
+                    HStack{
+                        Spacer()
+                        Text("Total Limit")
+                        Text(total, format: .currency(code: Locale.currencyCode))
+                        Spacer()
+                    }.font(.headline)
+                    
+                    ForEach(budgets){ budget in
+                        NavigationLink{
+                            BudgetDetailScreen(budget: budget)
+                        }label:{
+                            BudgetCellView(budget: budget)
+                        }
+                        
                     }
                 }
-            }.sheet(isPresented: $isPresnted, content: {
-                AddBudgetScreen()
-            })
-         
+            }
+        }.overlay(alignment: .bottom, content: {
+            Button("Filter"){
+                isFilterPresented = true
+            }.buttonStyle(.borderedProminent)
+                .tint(.gray)
+        })
+        
+        .navigationTitle("Budget App")
+        .toolbar{
+            ToolbarItem(placement: .topBarTrailing){
+                Button("Add Budget"){
+                    isPresented = true
+                }
+            }
+        }.sheet(isPresented: $isPresented, content: {
+            AddBudgetScreen()
+        })
+        .sheet(isPresented: $isFilterPresented, content: {
+            NavigationStack{
+                FilterScreen()
+            }
+            
+        })
     }
 }
 
