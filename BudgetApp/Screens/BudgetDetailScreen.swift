@@ -50,14 +50,7 @@ struct BudgetDetailScreen: View {
             print(error.localizedDescription)
         }
     }
-    private var total:Double{
-        return expenses.reduce(0){result, expense in
-            expense.amount+result
-        }
-    }
-    private var reamaining:Double{
-        return budget.limit - total
-    }
+    
     
     private var isFormValid :Bool{
         !title.isEmptyOrWhitespace && amount != nil && Double(amount!)>0 && !selectedTags.isEmpty
@@ -91,16 +84,16 @@ struct BudgetDetailScreen: View {
                     VStack{
                         HStack {
                             Spacer()
-                            Text("Total")
-                            Text(total,format: .currency(code: Locale.currencyCode ))
+                            Text("Spent")
+                            Text(budget.spent,format: .currency(code: Locale.currencyCode ))
                             Spacer()
                             
                         }
                         HStack {
                             Spacer()
                             Text("Reamaining")
-                            Text(reamaining,format: .currency(code: Locale.currencyCode ))
-                                .foregroundStyle(reamaining < 0 ? .red:.green)
+                            Text(budget.reamaining,format: .currency(code: Locale.currencyCode ))
+                                .foregroundStyle(budget.reamaining < 0 ? .red:.green)
                             Spacer()
                             
                         }
