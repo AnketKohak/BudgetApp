@@ -18,6 +18,8 @@ struct BudgetDetailScreen: View {
     @State private var selectedTags: Set<Tag> = []
     @State private var quantity: Int?
     
+    @State private var expenseToEdit: Expense?
+    
     // MARK: Init
     init(budget: Budget){
         self.budget = budget
@@ -38,7 +40,10 @@ struct BudgetDetailScreen: View {
             try context.save()
             title = ""
             amount = nil
+            quantity = nil
+            selectedTags = []
         }catch{
+            context.rollback()
             print(error.localizedDescription)
         }
     }
@@ -103,13 +108,22 @@ struct BudgetDetailScreen: View {
                             
                         }
                     }
+                    // MARK: - List Of Expense
                     ForEach(expenses){ expense in
                         ExpenseCellView(expense: expense)
+                            .onLongPressGesture{
+                                expenseToEdit = expense
+                            }
                     }.onDelete(perform: deleteExpense)
                     
                 }
             }
         }.navigationTitle(budget.title ?? "")
+            .sheet(item: $expenseToEdit) { expenseToEdit in
+                NavigationStack{
+                    EditExpenseScreen(expense: expenseToEdit)
+                }
+            }
     }
 }
 
