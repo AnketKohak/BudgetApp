@@ -2,68 +2,67 @@
 //  EditExpenseScreen.swift
 //  BudgetApp
 //
-//  Created by Anket Kohak on 30/01/25.
+//  Created by Mohammad Azam on 2/7/24.
 //
 
-import SwiftUI
+import SwiftUI 
 
 struct EditExpenseScreen: View {
-    // MARK: - Varible
+    
     @Environment(\.managedObjectContext) private var context
     @Environment(\.dismiss) private var dismiss
-    let expense: Expense
-    @State private var expenseTitle:String = ""
-    @State private var expenseAmount:Double?
-    @State private var expenseQuantity: Int = 0
-    @State private var expenseSelectedTags: Set<Tag> = []
-    
-    // MARK: - Function
-    private func updateExpense(){
-        expense.title = expenseTitle
-        expense.amount = expenseAmount ?? 0
-        expense.quantity = Int16(expenseQuantity)
-        expense.tags = NSSet(array: Array(expenseSelectedTags))
+  
+    @ObservedObject var expense: Expense
+    let onUpdate: ()-> Void
+    private func updateExpense() {
         
-        do{
+        do {
             try context.save()
-            dismiss()
-        }catch{
+            onUpdate()
+        } catch {
             print(error)
         }
+        
     }
     
-    // MARK: -Body
     var body: some View {
-        Form{
-            TextField("Title",text: $expenseTitle)
-            TextField("Amount", value: $expenseAmount ,format: .number)
-            TextField("Quantity", value: $expenseQuantity,format: .number)
-            TagsView(selectedTags: $expenseSelectedTags)
-        }.onAppear{
-            expenseTitle = expense.title ?? ""
-            expenseAmount = expense.amount
-            expenseQuantity = Int(expense.quantity)
-            if let tags = expense.tags{
-                expenseSelectedTags = Set(tags.compactMap {$0 as? Tag})
-            }
-        }.toolbar{
+        Form {
+            TextField("Title", text: Binding(get: {
+                expense.title ?? ""
+            }, set: { newValue in
+                expense.title = newValue
+            }))
+            TextField("Amount", value: $expense.amount, format: .number)
+            TextField("Quantity", value: $expense.quantity, format: .number)
+            TagsView(selectedTags: Binding(get: {
+                Set(expense.tags?.compactMap { $0 as? Tag } ?? [])
+            }, set: { newValue in
+                expense.tags = NSSet(array: Array(newValue))
+            }))
+        }
+        .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Update"){
+                Button("Update") {
                     updateExpense()
                 }
             }
-        }.navigationTitle(expense.title ?? "")
+        })
+        .navigationTitle(expense.title ?? "")
     }
 }
-struct EditExpenseContainerView: View{
+
+struct EditExpenseContainerView: View {
+    
     @FetchRequest(sortDescriptors: []) private var expenses: FetchedResults<Expense>
-    var body: some View{
-        NavigationStack{
-            EditExpenseScreen(expense: expenses[0])
+    
+    var body: some View {
+        NavigationStack {
+            EditExpenseScreen(expense: expenses[0], onUpdate: { })
         }
     }
 }
+
 #Preview {
     EditExpenseContainerView()
-        .environment(\.managedObjectContext , CoreDataProvider.preview.context)
+        .environment(\.managedObjectContext, CoreDataProvider.preview.context)
 }
